@@ -10,13 +10,11 @@ RUN npm ci
 # Copy all frontend files
 COPY . .
 
-# Build argument for Clerk public key
+# Optional: pass your real Clerk publishable key (recommended for production images).
+# If omitted, next.config.ts supplies a build-time placeholder so `npm run build` succeeds.
+# Example: docker build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-
-# Note: Docker may warn about "secrets in ARG/ENV" - this is OK!
-# The NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is meant to be public (it starts with pk_)
-# It's safe to include in the build as it's designed for client-side use
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
 
 # Build the Next.js app (creates 'out' directory with static files)
 RUN npm run build
